@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create User & API Key - Clean Dark UI</title>
+    <style>
+        /* CSS DENGAN TAMPILAN LEBIH BERSIH & PROFESIONAL */
+        :root {
+            --primary-color: #5d67f3; 
+            --background-dark: #121212; 
+            --card-dark: #1e1e1e; 
+            --text-light: #e0e0e0; 
+            --text-muted: #a0a0a0; 
+            --input-bg: #2b2b2b; 
+            --border-color: #3a3a3a; 
+            --error-color: #f44336;
+            --success-color: #4caf50;
+        }
+
+        body, html {
+            margin: 0; 
+            padding: 0; 
+            min-height: 100vh;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-light);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        
+        .api-card {
+            background-color: var(--card-dark); 
+            padding: 3rem 4rem; 
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            width: 90%; 
+            max-width: 450px; 
+            box-sizing: border-box; 
+            margin: 2rem 0;
+            text-align: center; /* Memastikan semua konten card di tengah */
+        }
+        
+        h1 { 
+            font-size: 1.7rem; /* Ukuran font disesuaikan */
+            font-weight: 600; 
+            margin-top: 0; 
+            margin-bottom: 0.5rem; 
+            color: var(--text-light); 
+            line-height: 1.2; 
+            
+            /* 🔥 PERUBAHAN UTAMA: Hapus white-space: nowrap; dan display: flex */
+            /* Ini memungkinkan teks untuk wrap secara alami */
+            
+            text-align: center; /* Memastikan teks judul selalu di tengah */
+        }
+        
+        .subtitle { 
+            font-size: 1rem; 
+            color: var(--text-muted); 
+            margin-bottom: 2rem; 
+            border-bottom: 1px solid var(--border-color); 
+            padding-bottom: 1rem;
+            text-align: center; 
+        }
+        
+        /* Tombol Aksi */
+        .action-btn {
+            background-color: var(--primary-color); 
+            color: var(--text-light); 
+            font-weight: 500; 
+            font-size: 1rem;
+            border: none; 
+            border-radius: 8px; 
+            padding: 0.85rem 1.5rem;
+            width: 100%; 
+            cursor: pointer; 
+            margin-bottom: 1rem;
+            transition: background-color 0.2s ease, opacity 0.2s ease;
+        }
+        
+        .action-btn:disabled { 
+            background-color: #4a4a4a; 
+            opacity: 0.7;
+            cursor: not-allowed; 
+            box-shadow: none;
+        }
+        
+        .action-btn:hover:not(:disabled) { 
+            background-color: #4650c4; 
+        }
+        
+        /* Tombol Generate (Sekunder) */
+        .generate-btn {
+            background-color: var(--input-bg); 
+            color: var(--primary-color); 
+            border: 1px solid var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .generate-btn:hover:not(:disabled) { 
+            background-color: #3a3a3a;
+            color: var(--text-light);
+        }
+
+        /* Grup Input Form */
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left; /* Biarkan label dan input rata kiri */
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Kontainer Key */
+        .key-container { position: relative; width: 100%; }
+        
+        .api-key-input {
+            width: 100%; 
+            background-color: var(--input-bg); 
+            border: 1px solid var(--border-color);
+            color: var(--text-light); 
+            font-family: monospace;
+            font-size: 0.95rem; 
+            border-radius: 8px; 
+            padding: 1rem; 
+            box-sizing: border-box;
+            transition: border-color 0.2s ease;
+        }
+        
+        .api-key-input:focus {
+            outline: none; 
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+        
+        .api-key-input.error { 
+            color: var(--error-color); 
+            border-color: var(--error-color); 
+        }
+
+        .copy-btn {
+            position: absolute; right: 8px; top: 50%; 
+            transform: translateY(-50%);
+            background-color: var(--success-color); 
+            color: var(--background-dark); 
+            border: none;
+            border-radius: 6px; 
+            padding: 0.4rem 0.7rem; 
+            font-size: 0.8rem;
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: background-color 0.2s ease;
+        }
+        
+        .copy-btn:hover { 
+            background-color: #388e3c; 
+        }
+
+        /* Feedback */
+        .feedback {
+            font-size: 0.95rem; 
+            font-weight: 500; 
+            margin-top: 1rem;
+            min-height: 1.5em; 
+            text-align: center;
+        }
+        
+        .feedback.success { 
+            color: var(--success-color); 
+        }
+        
+        .feedback.error { 
+            color: var(--error-color); 
+        }
+        
+        footer {
+            margin-top: auto; 
+            padding: 1rem; 
+            font-size: 0.8rem;
+            color: var(--text-muted); 
+            text-align: center;
+        }
+
+        /* Media Queries untuk Responsivitas */
+        @media (max-width: 550px) {
+            .api-card {
+                padding: 2.5rem 3rem; /* Kurangi padding pada layar menengah */
+                max-width: 90%;
+            }
+            h1 {
+                font-size: 1.6rem; 
+            }
+        }
+
+        @media (max-width: 400px) {
+            .api-card {
+                padding: 2rem 2rem; /* Kurangi padding card lebih lanjut pada layar sangat kecil */
+                max-width: 95%; /* Biarkan card mengambil lebih banyak lebar */
+            }
+            h1 {
+                font-size: 1.4rem; /* Kecilkan judul lagi di layar sangat kecil */
+                gap: 3px; /* Kurangi jarak antar emoji dan teks */
+            }
+            .subtitle {
+                font-size: 0.9rem;
+            }
+            .action-btn, .api-key-input {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+            .copy-btn {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
+            }
+            .form-group label {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="api-card">
+        <h1>Buat User dan ApiKey</h1>
+        <p class="subtitle">Silakan isi detail di bawah untuk membuat dan menyimpan pengguna baru.</p>
+
+        <div class="form-group">
+            <label for="apiKeyInput">1. API Key (Generated)</label>
+            <div class="key-container">
+                <input type="text" id="apiKeyInput" class="api-key-input" value="" readonly>
+                <button id="copyBtn" class="copy-btn">Copy</button>
+            </div>
+        </div>
+        
+        <button id="generateBtn" class="action-btn generate-btn">Generate New Key</button>
+
+        <div class="form-group">
+            <label for="firstNameInput">2. First Name (Required)</label>
+            <input type="text" id="firstNameInput" class="api-key-input" placeholder="Enter first name...">
+        </div>
+
+        <div class="form-group">
+            <label for="lastNameInput">3. Last Name (Optional)</label>
+            <input type="text" id="lastNameInput" class="api-key-input" placeholder="Enter last name...">
+        </div>
+
+        <div class="form-group">
+            <label for="emailInput">4. Email (Required)</label>
+            <input type="email" id="emailInput" class="api-key-input" placeholder="Enter email address...">
+        </div>
+        
+        <button id="saveBtn" class="action-btn">Save User</button>
+
+        <p id="saveFeedback" class="feedback"></p>
+
+    </main>
+
+    <footer>
+        Copyright DP | Clean API Interface
+    </footer>
+
+    <script>
+        // --- 1. Pilih Elemen ---
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const saveBtn = document.getElementById('saveBtn');
+
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const firstNameInput = document.getElementById('firstNameInput');
+        const lastNameInput = document.getElementById('lastNameInput');
+        const emailInput = document.getElementById('emailInput');
+        
+        const saveFeedback = document.getElementById('saveFeedback');
+
+        // --- 2. Fungsi Generate Key (Endpoint baru: /generate-key) ---
+        async function generateApiKey() {
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Membuat...';
+            apiKeyInput.value = 'Menghubungi server...';
+            apiKeyInput.classList.remove('error');
+            saveFeedback.textContent = ''; // Hapus feedback lama
+
+            try {
+                // Endpoint baru ini HANYA membuat string, tidak menyimpan
+                const response = await fetch('/generate-key', {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.statusText}`);
+                }
+                const data = await response.json();
+                if (data.apiKey) {
+                    apiKeyInput.value = data.apiKey;
+                } else {
+                    throw new Error('Respons server tidak mengandung apiKey');
+                }
+            } catch (error) {
+                console.error('Gagal mengambil API key:', error);
+                apiKeyInput.value = 'Gagal generate key. Coba lagi.';
+                apiKeyInput.classList.add('error');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate New Key';
+            }
+        }
+
+        // --- 3. Fungsi Copy (Tidak Berubah) ---
+        function copyToClipboard() {
+            if (apiKeyInput.classList.contains('error') || apiKeyInput.value === '') {
+                return;
+            }
+            apiKeyInput.select();
+            apiKeyInput.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(apiKeyInput.value)
+                .catch(err => {
+                    console.error('Gagal menyalin: ', err);
+                });
+        }
+
+        // --- 4. Fungsi Save User (BARU) ---
+        async function saveUser() {
+            const apiKey = apiKeyInput.value;
+            const firstName = firstNameInput.value;
+            const lastName = lastNameInput.value;
+            const email = emailInput.value;
+
+            // Validasi Sederhana
+            if (!apiKey || !firstName || !email) {
+                saveFeedback.textContent = 'API Key, First Name, dan Email wajib diisi.';
+                saveFeedback.className = 'feedback error';
+                return;
+            }
+            
+            if (apiKeyInput.classList.contains('error') || apiKey === 'Gagal generate key. Coba lagi.') {
+                 saveFeedback.textContent = 'Generate API key yang valid terlebih dahulu.';
+                 saveFeedback.className = 'feedback error';
+                return;
+            }
+
+            // Tampilkan status loading
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Menyimpan...';
+            saveFeedback.textContent = '';
+            saveFeedback.className = 'feedback';
+
+            try {
+                // Kirim request ke endpoint /users
+                const response = await fetch('/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        apiKey: apiKey,
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) { // Status 201 Created
+                    saveFeedback.textContent = data.message || 'User berhasil disimpan!';
+                    saveFeedback.classList.add('success');
+                    // Kosongkan form setelah berhasil
+                    apiKeyInput.value = '';
+                    firstNameInput.value = '';
+                    lastNameInput.value = '';
+                    emailInput.value = '';
+                } else {
+                    // Tampilkan error dari server (misal: email duplikat)
+                    throw new Error(data.error || 'Gagal menyimpan data');
+                }
+
+            } catch (error) {
+                console.error('Error saat menyimpan user:', error);
+                saveFeedback.textContent = error.message;
+                saveFeedback.className = 'feedback error';
+            } finally {
+                // Aktifkan kembali tombol
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save User';
+            }
+        }
+
+        // --- 5. Tambahkan Event Listener ---
+        generateBtn.addEventListener('click', generateApiKey);
+        copyBtn.addEventListener('click', copyToClipboard);
+        saveBtn.addEventListener('click', saveUser);
+
+    </script>
+</body>
+</html>
